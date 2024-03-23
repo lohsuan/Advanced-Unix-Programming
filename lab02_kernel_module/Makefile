@@ -19,4 +19,4 @@ clean:
 install: all
 	mkdir -p ../rootfs/modules
 	cp maze.ko ../rootfs/modules
-	# cp maze.ko ../rootfs
+	# cp testcase/mazetest test.sh ../rootfs
