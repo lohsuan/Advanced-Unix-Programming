@@ -1,8 +1,9 @@
+
 UP24 Lab02
 ==========
-Date: 2024-03-04
-
-[TOC]
+* Date: 2024-03-04
+* Main Code: [maze.c](./maze.c)
+* Outcome: [outcome](./outcome/all_testcases.md)
 
 # Random Walk in the Kernel
 
@@ -10,7 +11,7 @@ This lab aims to practice implementing a character device as a kernel module tha
 
 ## Preparation
 
-Please read our [Lab02 Pre-Lab Announcement](./lab2-prelab.md) for the details. You should have at least the `dist-6.6.17.tbz` and the `hellomod-6.6.17.tbz` files. You also need the QEMU emulator to run the files. See the [Lab Hints](#Lab-Hints) section for more details.
+Please read our [Lab02 Pre-Lab Announcement](./environment/lab2-prelab.md) for the details. You should have at least the `dist-6.6.17.tbz` and the `hellomod-6.6.17.tbz` files. You also need the QEMU emulator to run the files. See the [Lab Hints](#Lab-Hints) section for more details.
 
 ## Specification
 
