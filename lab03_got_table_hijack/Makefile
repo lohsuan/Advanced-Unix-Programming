@@ -1,4 +1,4 @@
-.PHONY: clean server
+.PHONY: clean server test run
 
 all: libsolver libmaze maze
 

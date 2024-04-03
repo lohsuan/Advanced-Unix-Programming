@@ -19,3 +19,20 @@ This lab aims to practice implementing a character device as a kernel module tha
     - `cat /proc/maze`
 1. **資源管理：** 當裝置被關閉或 process 終止時，釋放所有分配的資源。
 1. **數量限制：** 最多同時處理 `_MAZE_MAXUSER`（3）個迷宮，並確保每個 process 同時只能創建一個迷宮。
+
+### Lab03 - GOT table hijack
+
+This lab aims to play with **LD_PRELOAD** and **GOT table**. 
+
+實作內容：
+1. `LD_PRELOAD=./libsolver.so ./maze`： preload our shared library `libsolver.so`
+
+因為我們所寫的 `libsolver.so` 先被 preloaded 所以執行 function 時會優先執行，因此我們 hijack `maze_init`，讓 [`maze.c`](./lab03_got_table_hijack/maze.c) 在呼叫 `maze_init` 時並不是執行原本 [`libmaze_dummy.c`](./lab03_got_table_hijack/libmaze_dummy.c) 的流程，而是執行我們打包 [`libsolver.c`](./lab03_got_table_hijack/libsolver.c) 出的 shared library
+
+2. [`libsolver.c`](./lab03_got_table_hijack/libsolver.c)：先算出解開 maze 需走的路徑 (`move_up`/`move_down`/`move_left`/`move_right` )，再依序蓋到  `move_1` 到 `move_n` 的 GOT table
+
+
+3.  GOT table address 取得：[`got.py`](./lab03_got_table_hijack/got/got.py)，使用 `pwntools` 工具取得
+
+actual addresses of `move_1`'s GOT table entries = *main_real_address* - *main_relative_address* + *got_offset_of_move_1* 
+
