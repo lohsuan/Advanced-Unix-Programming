@@ -1,0 +1,17 @@
+BEGIN open-blacklist
+/bin/*
+/bin/grep
+END open-blacklist
+BEGIN read-blacklist
+PRIVATE_KEY
+END read-blacklist
+BEGIN write-blacklist
+/etc/*
+END write-blacklist
+BEGIN connect-blacklist
+172.217.160.100
+END connect-blacklist
+BEGIN getaddrinfo-blacklist
+people.cs.nycu.edu.tw/~chuang
+www.cs.nycu.edu.tw
+END getaddrinfo-blacklist
