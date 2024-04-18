@@ -1,5 +1,7 @@
 # HW1 Demo
 
+### extract example
+unzip `examples.zip` into `examples` dir
 ### Compile
 `make`
 
