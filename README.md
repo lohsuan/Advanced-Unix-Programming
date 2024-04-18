@@ -25,15 +25,27 @@ This lab aims to practice implementing a character device as a kernel module tha
 This lab aims to play with **LD_PRELOAD** and **GOT table**. 
 
 實作內容：
-1.  GOT table address 取得：[`got.py`](./lab03_got_table_hijack/got/got.py)，使用 `pwntools` 工具取得
-> actual addresses of `move_1`'s GOT table entries = *main_real_address* - *main_relative_address* + *got_offset_of_move_1* 
 
-2. [`libsolver.c`](./lab03_got_table_hijack/libsolver.c)
-> * hijack `maze_init`，讓 [`maze.c`](./lab03_got_table_hijack/maze.c) 在呼叫 `maze_init` 時並不是執行原本 [`libmaze_dummy.c`](./lab03_got_table_hijack/libmaze_dummy.c) 的流程，而是執行我們打包 [`libsolver.c`](./lab03_got_table_hijack/libsolver.c) 出的 shared library
-> * 先算出解開 maze 需走的路徑 `move_up`/`move_down`/`move_left`/`move_right`，再依序蓋到  `move_1` ~ `move_n` 的 GOT table
+#### 1. Library hijack
+[libsolver.c](./lab03_got_table_hijack/libsolver.c) 
+* 負責產生我們自己的 shared library `libsolver.so`
+* 執行程式時：`LD_PRELOAD=./libsolver.so ./maze`
+* hijack `maze_load`，讓 [`maze.c`](./lab03_got_table_hijack/maze.c) 在呼叫 `maze_load` 時並不是執行原本 [`libmaze_dummy.c`](./lab03_got_table_hijack/libmaze_dummy.c)，而是 `libsolver.so` 中的 `maze_load`
+* 使用 `dlsym` 取得原本的 `maze_load` 並呼叫，達到在 `maze_load` 前後執行我們自己的程式
 
-3. `gcc -shared -o libsolver.so -fPIC libsolver.c -ldl`
-> `-shared -fPIC`: 編譯動態函式庫
+#### 2. GOT table hijack
+[got.py](./lab03_got_table_hijack/got/got.py)
+* 使用 `pwntools` 工具取得 GOT table offset
 
-4. `LD_PRELOAD=./libsolver.so ./maze`so`
-> LD_PRELOAD 是系統中的環境變數：會讓指定載入的 library 優先級最高，使我們可以覆蓋原本調用的 library
+[libsolver.c](./lab03_got_table_hijack/libsolver.c) 
+* 算出解開 maze 需走的路徑，再依序蓋到  `move_1` ~ `move_n` 的 GOT table
+* `move_1` 的實際 address:
+  * GOT table entries = *main_real_address* - *main_relative_address* + *got_offset_of_move_1* 
+
+
+#### 3. Makefile
+* `gcc -shared -o libsolver.so -fPIC libsolver.c -ldl`
+  * `-shared -fPIC`: 編譯動態函式庫
+  * `-ldl`: dynamic linking library (dlopen, dlsym, dlclose, dlerror)
+* `LD_PRELOAD=./libsolver.so ./maze`
+  * `LD_PRELOAD` 是系統中的環境變數：會讓指定載入的 library 且優先級最高，使我們可以覆蓋原本調用的 library

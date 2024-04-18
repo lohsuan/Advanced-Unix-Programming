@@ -118,7 +118,7 @@ void print_dir(char *dir, int length) {
     }
 }
 
-maze_t *mz = NULL;
+// maze_t *mz = NULL;
 
 void *getSymbolAddrWithFuncName(char *maze_func_name) {
     void *handle = dlopen("libmaze.so", RTLD_LAZY);  // open shared library
@@ -140,22 +140,26 @@ void *getSymbolAddrWithFuncName(char *maze_func_name) {
     return result_addr;
 }
 
-long pageBetweenMinAndMaxGOTOffset() {
-    long min = hex_got_offset_table[0];
-    long max = hex_got_offset_table[0];
-    for (int i = 0; i < _MAZE_MAXY * _MAZE_MAXX; i++) {
-        if (hex_got_offset_table[i] < min) {
-            min = hex_got_offset_table[i];
+maze_t * (*origin_maze_load)(const char *fn) = NULL;
+maze_t *mz = NULL;
+
+maze_t * maze_load(const char *fn) {
+    if (origin_maze_load == NULL) {
+        void *handle = dlopen("libmaze.so", RTLD_LAZY);
+        if (handle != NULL) {
+            origin_maze_load = dlsym(handle, "maze_load");
         }
-        if (hex_got_offset_table[i] > max) {
-            max = hex_got_offset_table[i];
+        dlclose(handle);
+    }
+    
+    if (origin_maze_load != NULL) {
+        mz = origin_maze_load(fn);
+        if (mz == NULL) {
+            fprintf(stderr, "injected: maze_load failed\n");
+            return NULL;
         }
     }
-    return (max - min) / sysconf(_SC_PAGE_SIZE) + 1;
-}
 
-int maze_init() {
-    if ((mz = maze_load("./maze.txt")) == NULL) return -1;
     print_maze(mz);
 
     solve_maze(mz);
@@ -186,7 +190,7 @@ int maze_init() {
         if (mprotect((void *)page_start_aligned, (size_t)page_size, PROT_READ | PROT_WRITE | PROT_EXEC) == -1) {
             printf("mprotect failed\n");
             fprintf(stderr, "\033[1;31m%s %s\033[0m\n", "mprotect failed: ", strerror(errno));
-            return -1;
+            return NULL;
         } else {
             // printf("[%d]: %p ",i, page_start_aligned);
         }
@@ -203,5 +207,5 @@ int maze_init() {
     }
     printf("\n--- inject done ---\n\n");
 
-    return 0;
+    return mz;
 }
