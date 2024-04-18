@@ -129,15 +129,26 @@ int isBlacklisted(const char *check_content, const char *blacklist) {
 
 // Wrapper for fopen function
 FILE *fopen(const char *path, const char *mode) {
+
+    // get target filename from synbolic link
+    char buf[256];
+    ssize_t len = readlink(path, buf, sizeof(buf));
+    if (len != -1) {
+        buf[len] = '\0';
+        path = buf;
+    }
+
     // parse the path to get the filename and remove file extension
     // and store the filename in a global variable for log file naming
-    parse_base_filename = basename(path); // with extension
+    parse_base_filename = strdup(basename(path)); // with extension
 
     char *filename = strdup(basename(path));
     char *dot = strrchr(filename, '.');
     if (dot) *dot = '\0'; 
     parse_log_filename = filename; // without extension
-
+    // printf("parse_base_filename = %s\n", parse_base_filename);
+    // printf("parse_log_filename = %s\n", parse_log_filename);
+    
     // Check if the path matches any blacklist pattern
     for (int i = 0; i < num_entries; i++) {
         if (strcmp(blacklist[i].api, "open") != 0) continue;
@@ -203,6 +214,7 @@ size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream) {
             if (isBlacklisted(ptr, blacklist[i].rule) == 1) {
                 errno = EACCES;
                 fprintf(stderr, "[logger] fread(%p, %zu, %zu, %p) = 0\n", ptr, size, nmemb, stream);
+                ptr = memset(ptr, 0, len); // clear the content in ptr
                 return 0;
             }
         }
@@ -297,9 +309,8 @@ int getaddrinfo(const char *node, const char *service, const struct addrinfo *hi
         if (strcmp(blacklist[i].api, "getaddrinfo") != 0) continue;
 
         if (isBlacklisted(node, blacklist[i].rule) == 1) {
-            errno = EAI_NONAME;
-            fprintf(stderr, "[logger] getaddrinfo(\"%s\", %s, %p, %p) = -1\n", node, service, hints, res);
-            return -2;
+            fprintf(stderr, "[logger] getaddrinfo(\"%s\", %s, %p, %p) = %d\n", node, service, hints, res, EAI_NONAME);
+            return EAI_NONAME;
         }
     }
 

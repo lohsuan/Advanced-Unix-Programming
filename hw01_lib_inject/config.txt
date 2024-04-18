@@ -1,11 +1,11 @@
 BEGIN open-blacklist
 /bin/*
-/bin/grep
 END open-blacklist
 BEGIN read-blacklist
-PRIVATE_KEY
+PRIVATE_KEY 
 END read-blacklist
 BEGIN write-blacklist
+test.txt
 /etc/*
 END write-blacklist
 BEGIN connect-blacklist

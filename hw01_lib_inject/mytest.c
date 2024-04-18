@@ -12,8 +12,8 @@ int main() {
     //     printf("bad\n");
     // }
 
-    // 嘗試打開不在黑名單內的文件
-    fp = fopen("file.txt" , "w");
+    // test soft link
+    fp = fopen("./link" , "w");
     if (fp == NULL) {
         printf("bad\n");
     } else {
