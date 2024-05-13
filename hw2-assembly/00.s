@@ -9,4 +9,4 @@ sub eax, 0x278cbc5a
 done:
 
 ; 2500
-FLAG: ASM{d5f3ac171331aa048861ee80d02a57fea3431f63}
+; FLAG: ASM{d5f3ac171331aa048861ee80d02a57fea3431f63}

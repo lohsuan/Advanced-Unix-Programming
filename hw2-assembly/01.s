@@ -13,4 +13,4 @@ mov [0x60000c], eax
 done:
 
 ; 2501
-FLAG: ASM{b30ea3278ec8e1eb79f9931ebf572890df2befeb}
+; FLAG: ASM{b30ea3278ec8e1eb79f9931ebf572890df2befeb}
