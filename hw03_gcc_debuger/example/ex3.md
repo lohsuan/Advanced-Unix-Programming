@@ -1,7 +1,9 @@
 ### Example 3
-- Requirements (advanced): `delete` `patch`
-- Launch debugger: `./sdb ./guess`
-- Input:
+
+#### Launch debugger: 
+`./sdb ./guess`
+
+#### Input:
 ```
 break 0x4010de
 cont
@@ -17,7 +19,7 @@ cont
 patch 0x402015 0x4e49570a 4
 cont
 ```
-- Sample:
+#### Sample Output:
 ```
 ** program './guess' loaded. entry point 0x40108b.
       40108b: f3 0f 1e fa                       endbr64

@@ -1,7 +1,9 @@
 ### Example 2
-- Requirements (basic): `break` `info break` `info reg`
-- Launch debugger: `./sdb ./hello`
-- Input:
+
+#### Launch debugger: 
+`./sdb ./hello`
+
+#### Input:
 ```
 break 0x401005
 break 40102b
@@ -12,7 +14,8 @@ cont
 info reg
 cont
 ```
-- Sample:
+
+#### Sample Output:
 ```
 ** program './hello' loaded. entry point 0x401000
       401000: f3 0f 1e fa                     	endbr64   

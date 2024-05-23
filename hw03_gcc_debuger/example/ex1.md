@@ -1,7 +1,8 @@
 ### Example 1
-- Requirements (basic): `load` `cont` `si` `disassemble`
-- Launch debugger: `./sdb`
-- Input:
+#### Launch debugger: 
+`./sdb`
+
+#### Input:
 ```
 si
 load ./hello
@@ -9,7 +10,7 @@ si
 si
 cont
 ```
-- Sample:
+#### Sample Output:
 ```
 (sdb) si
 ** please load a program first.

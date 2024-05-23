@@ -142,9 +142,9 @@ void set_breakpoint(uint64_t address) {
 }
 
 void info_breakpoints() {
-    printf("Num     Address\n");
+    printf("Num\tAddress\n");
     for (auto &breakpoint : breakpoints_id) {
-        printf("%d       0x%lx\n", breakpoint.second, breakpoint.first);
+        printf("%d\t0x%lx\n", breakpoint.second, breakpoint.first);
     }
 }
 
