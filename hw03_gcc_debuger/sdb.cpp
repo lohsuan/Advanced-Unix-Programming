@@ -28,7 +28,7 @@ const size_t PEEK_SIZE = 5;
 void load_program(char *program);  // load [program]
 void print_disass_instr(uint64_t address, const uint8_t *code, size_t code_size);
 void bytes_to_hex_string(char *bytes, const uint8_t *data, int size);
-void get_text_section(const char *path, uint8_t **textptr, uint64_t *n, uint64_t *sh_addr);
+void load_text_section_from_elf(const char *path, uint8_t **textptr, uint64_t *n, uint64_t *sh_addr);
 Elf64_Shdr get_section_hdr64(FILE *file_ptr, Elf64_Ehdr elf_hdr, Elf64_Off n);
 // functions for debugger
 void single_step();                                                // si
@@ -102,7 +102,7 @@ void print_disass_instr(const uint8_t *code, size_t code_size, uint64_t address)
         char bytes[128] = "";
         bytes_to_hex_string(bytes, insn[i].bytes, insn[i].size);
         // PRIx64 : 64-bit hexadecimal, %-32s : left-justified, 32 characters
-        printf("\t%" PRIx64 ":  %-32s%s\t\t%s\n",
+        printf("\t%" PRIx64 ": %-32s%s\t  %s\n",
                insn[i].address,   // machine code 的地址
                bytes,             // machine code 的十六進制表示
                insn[i].mnemonic,  // machine code 的助記符 (instruction) ex: mov, add, sub
@@ -121,8 +121,6 @@ void single_step() {
 void continue_execution() {
     ptrace(PTRACE_CONT, child_pid, 0, 0);
     waitpid(child_pid, &child_status, 0);
-    // TODO: check if hit breakpoint and restore the original data if hit breakpoint and then single step -> set back
-    // breakpoint
 }
 
 void set_breakpoint(uint64_t address) {
@@ -227,11 +225,8 @@ void patch_memory(uint64_t address, uint64_t patch_hex_value, int len) {
 }
 
 void restore_breakpoint() {
-    // 先走一步，執行 restored 的 instruction
-    ptrace(PTRACE_SINGLESTEP, child_pid, 0, 0);
-    waitpid(child_pid, &child_status, 0);
-
-    // 再將原本的 breakpoint 恢復，下一次再執行到 breakpoint 時，才會停下來
+    // 將原本的 breakpoint 恢復，下一次再執行到 breakpoint 時，才會停下來
+    printf("** restore breakpoint at 0x%lx.\n", restore_breakpoint_address);
     uint64_t data = ptrace(PTRACE_PEEKTEXT, child_pid, restore_breakpoint_address, 0);
     uint64_t data_int3 = (data & 0xFFFFFFFFFFFFFF00) | INT3;
     ptrace(PTRACE_POKETEXT, child_pid, restore_breakpoint_address, data_int3);
@@ -252,7 +247,7 @@ int main(int argc, char *argv[]) {
 
     if (argc > 1) {
         load_program(argv[1]);
-        get_text_section(argv[1], &textptr, &text_size, &text_start_addr);
+        load_text_section_from_elf(argv[1], &textptr, &text_size, &text_start_addr);
         // regs.rip - text_start_addr : 目前指令在 text section 的 index
         print_disass_instr(&textptr[regs.rip - text_start_addr], text_size - (regs.rip - text_start_addr), regs.rip);
     } else {
@@ -263,7 +258,7 @@ int main(int argc, char *argv[]) {
                 char program[256];
                 scanf("%s", program);
                 load_program(program);
-                get_text_section(program, &textptr, &text_size, &text_start_addr);
+                load_text_section_from_elf(program, &textptr, &text_size, &text_start_addr);
                 print_disass_instr(&textptr[regs.rip - text_start_addr], text_size - (regs.rip - text_start_addr),
                                    regs.rip);
                 break;
@@ -327,11 +322,20 @@ int main(int argc, char *argv[]) {
 
         int step = 0;                      // 已經執行完 breakpoint 指令代表
         if (strcmp(command, "si") == 0) {  // si
-            if (restore_breakpoint_address != 0) restore_breakpoint();
-            single_step();
+            if (restore_breakpoint_address != 0) {
+                single_step();
+                restore_breakpoint();
+            } else {
+                single_step();
+            }
             step = 0;  // si 是到下一個指令，再檢查是否是 breakpoint，reg.rip 就是現在要檢查的指令
         } else if (strcmp(command, "cont") == 0) {  // cont
-            if (restore_breakpoint_address != 0) restore_breakpoint();
+            if (restore_breakpoint_address != 0) {
+                // 先走一步，執行 restored 的 instruction
+                single_step();
+                // 再 restore breakpoint
+                restore_breakpoint();
+            }
             continue_execution();
             step = 1;                                  // cont 是撞到 int3 後停下來，還沒執行完 int3 那行
         } else if (strcmp(command, "syscall") == 0) {  // syscall
@@ -391,7 +395,7 @@ Elf64_Shdr get_section_hdr64(FILE *file_ptr, Elf64_Ehdr elf_hdr, Elf64_Off n) {
     return section_hdr;
 }
 
-void get_text_section(const char *path, uint8_t **textptr, uint64_t *n, uint64_t *sh_addr) {
+void load_text_section_from_elf(const char *path, uint8_t **textptr, uint64_t *n, uint64_t *sh_addr) {
     FILE *file_ptr = fopen(path, "rb");
 
     unsigned char e_ident[EI_NIDENT];
