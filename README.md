@@ -1,6 +1,44 @@
 # Advanced UNIX Programming 2024
 The topics include file I/O, process control, signals, multi-thread, daemons, IPC, and terminal I/O...
 
+
+### HW03 - instruction-level debugger
+
+implement a simple instruction-level debugger using the `ptrace` interface
+functionality:
+* print disassembled instructions
+* single-step execution
+* continue execution
+* set/print/delete breakpoints
+* print register values
+* syscall tracing
+* patching memory
+
+#### Notes
+* src: [hw03_debugger/sdb.cpp](./hw03_debugger/sdb.cpp)
+* `ptrace` is a system call that provides a means by which a parent process may observe and control the execution of another process, and examine and change its memory and registers.
+* `capstone` is a lightweight multi-platform, multi-architecture disassembly framework we use to disassemble the instructions.
+* `0xcc` is the opcode for `int3` instruction, which is used to set a breakpoint.
+* breakpoints functionality:
+  * when the debugger hits a breakpoint, it should restore the original instruction.
+  * next time we call single-step or continue, it should run the original instruction.
+  * after the original instruction is executed, we should restore the breakpoint. (image the case that the breakpoint is at the middle of a loop)
+    * it is implemented by single-step across the original instruction, and then restore the breakpoint.
+* for tracking the enter and exit of a syscall, we use the `ptrace` option `PTRACE_O_TRACESYSGOOD` and `0x80` to indicate the a syscall.
+* `syscall` will be executed twice, one for entering and one for exiting (成對出現), so we can use a flag to distinguish them.
+
+### HW02 - practice assembly
+src: [hw02_assembly](./hw02_assembly/)
+
+Topics: (commit hash)
+* 4654c45 hw2-asm: function call (calling convention)
+* 67a2488 hw2-asm: control flow (branch, loop)
+* 5af1300 hw2-asm: mathematic equations (multiplication and division)
+* 5c9089b hw2-asm: shift and rotate
+* 7e365e4 hw2-asm: bitwise operations
+* 2bcf9c9 hw2-asm: simple arithmetic instructions
+* 4edfbc3 hw2-asm: basic add and sub
+
 ### HW01 - library injection & API hijacking
 
 Monitor File Activities of Dynamically Linked Programs \
