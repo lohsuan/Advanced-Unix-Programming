@@ -1,0 +1,27 @@
+** program './guess' loaded. entry point 0x40108b.
+      40108b: f3 0f 1e fa                     	endbr64   
+      40108f: 55                              	push      rbp
+      401090: 48 89 e5                        	mov       rbp, rsp
+      401093: 48 83 ec 10                     	sub       rsp, 0x10
+      401097: ba 12 00 00 00                  	mov       edx, 0x12
+(sdb) break 0x401128
+** set a breakpoint at 0x401128.
+(sdb) cont
+** hit a breakpoint at 0x401128.
+      401128: b8 01 00 00 00                  	mov       eax, 1
+      40112d: 0f 05                           	syscall   
+      40112f: c3                              	ret       
+      401130: b8 00 00 00 00                  	mov       eax, 0
+      401135: 0f 05                           	syscall   
+(sdb) cont
+guess a number > 1
+** hit a breakpoint at 0x401128.
+      401128: b8 01 00 00 00                  	mov       eax, 1
+      40112d: 0f 05                           	syscall   
+      40112f: c3                              	ret       
+      401130: b8 00 00 00 00                  	mov       eax, 0
+      401135: 0f 05                           	syscall   
+(sdb) cont
+
+no no no
+** the target program terminated.

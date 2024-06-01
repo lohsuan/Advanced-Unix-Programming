@@ -1,0 +1,14 @@
+./sdb ./guess
+break 0x4010de
+cont
+1
+patch 0x4010e8 0x9090 2
+si
+info break
+delete 0
+break 0x4010ea
+delete 0
+info break
+cont
+patch 0x402015 0x4e49570a 4
+cont

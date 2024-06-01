@@ -1,0 +1,35 @@
+** program './hello' loaded. entry point 0x401000.
+    401000: f3 0f 1e fa                         endbr64		
+    401004: 55                                  push		rbp
+    401005: 48 89 e5                            mov		rbp, rsp
+    401008: ba 0e 00 00 00                      mov		edx, 0xe
+    40100d: 48 8d 05 ec 0f 00 00                lea		rax, [rip + 0xfec]
+(sdb) break 0x401030
+** set a breakpoint at 0x401030.
+(sdb) break 0x401040
+** set a breakpoint at 0x401040.
+(sdb) syscall
+** hit a breakpoint at 0x401030.
+    401030: 0f 05                               syscall		
+    401032: c3                                  ret		
+    401033: b8 00 00 00 00                      mov		eax, 0
+    401038: 0f 05                               syscall		
+    40103a: c3                                  ret		
+(sdb) syscall
+** enter a syscall(1) at 0x401030.
+    401030: 0f 05                               syscall		
+    401032: c3                                  ret		
+    401033: b8 00 00 00 00                      mov		eax, 0
+    401038: 0f 05                               syscall		
+    40103a: c3                                  ret		
+(sdb) cont
+hello world!
+** hit a breakpoint at 0x401040.
+    401040: 0f 05                               syscall		
+** the address is out of the range of the text section.
+(sdb) syscall
+** enter a syscall(60) at 0x401040.
+    401040: 0f 05                               syscall		
+** the address is out of the range of the text section.
+(sdb) syscall
+** the target program terminated.

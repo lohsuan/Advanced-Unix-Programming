@@ -1,0 +1,32 @@
+** program './guess' loaded. entry point 0x40108b.
+      40108b: f3 0f 1e fa                     	endbr64   
+      40108f: 55                              	push      rbp
+      401090: 48 89 e5                        	mov       rbp, rsp
+      401093: 48 83 ec 10                     	sub       rsp, 0x10
+      401097: ba 12 00 00 00                  	mov       edx, 0x12
+(sdb) patch 0x4010e8 0x9090 2
+** patch memory at address 0x4010e8.
+(sdb) break 0x4010e8
+** set a breakpoint at 0x4010e8.
+(sdb) cont
+guess a number > 1
+** hit a breakpoint at 0x4010e8.
+      4010e8: 90                              	nop       
+      4010e9: 90                              	nop       
+      4010ea: ba 06 00 00 00                  	mov       edx, 6
+      4010ef: 48 8d 05 1f 0f 00 00            	lea       rax, [rip + 0xf1f]
+      4010f6: 48 89 c6                        	mov       rsi, rax
+(sdb) break 4010ea
+** set a breakpoint at 0x4010ea.
+(sdb) patch 4010ea 0x03ba 4
+** patch memory at address 0x4010ea.
+(sdb) cont
+** hit a breakpoint at 0x4010ea.
+      4010ea: ba 03 00 00 00                  	mov       edx, 3
+      4010ef: 48 8d 05 1f 0f 00 00            	lea       rax, [rip + 0xf1f]
+      4010f6: 48 89 c6                        	mov       rsi, rax
+      4010f9: bf 01 00 00 00                  	mov       edi, 1
+      4010fe: e8 25 00 00 00                  	call      0x401128
+(sdb) cont
+
+ye** the target program terminated.

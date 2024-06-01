@@ -14,6 +14,7 @@
 #include <map>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 using namespace std;
@@ -51,7 +52,8 @@ unordered_map<uint64_t, char> breakpoints;
 map<uint64_t, int> breakpoints_id;
 int breakpoint_count = 0;
 uint64_t restore_breakpoint_address = 0;
-bool syscall_enter = true;
+
+unordered_set<int> syscall_enter_number;
 
 void load_program(char *program) {
     child_pid = fork();
@@ -226,7 +228,7 @@ void patch_memory(uint64_t address, uint64_t patch_hex_value, int len) {
 
 void restore_breakpoint() {
     // 將原本的 breakpoint 恢復，下一次再執行到 breakpoint 時，才會停下來
-    printf("** restore breakpoint at 0x%lx.\n", restore_breakpoint_address);
+    // printf("** restore breakpoint at 0x%lx.\n", restore_breakpoint_address);
     uint64_t data = ptrace(PTRACE_PEEKTEXT, child_pid, restore_breakpoint_address, 0);
     uint64_t data_int3 = (data & 0xFFFFFFFFFFFFFF00) | INT3;
     ptrace(PTRACE_POKETEXT, child_pid, restore_breakpoint_address, data_int3);
@@ -243,8 +245,10 @@ void syscall() {
 }
 
 int main(int argc, char *argv[]) {
-    char command[256];
+    setvbuf(stdout, NULL, _IONBF, 0); // for automation testing (do not buffer the output)
 
+    char command[256];
+    
     if (argc > 1) {
         load_program(argv[1]);
         load_text_section_from_elf(argv[1], &textptr, &text_size, &text_start_addr);
@@ -367,12 +371,13 @@ int main(int argc, char *argv[]) {
 
             else if (WSTOPSIG(child_status) & 0x80) {
                 regs.rip -= 2;  // syscall's instruction length is 2 bytes, so go back 2 bytes
-                if (syscall_enter) {
+                if (syscall_enter_number.find(regs.orig_rax) == syscall_enter_number.end()) {
                     printf("** enter a syscall(%lld) at 0x%llx.\n", regs.orig_rax, regs.rip);
+                    syscall_enter_number.insert(regs.orig_rax);
                 } else {
                     printf("** leave a syscall(%lld) = %lld at 0x%llx.\n", regs.orig_rax, regs.rax, regs.rip);
+                    syscall_enter_number.erase(regs.orig_rax);
                 }
-                syscall_enter = !syscall_enter;
             }
         }
 

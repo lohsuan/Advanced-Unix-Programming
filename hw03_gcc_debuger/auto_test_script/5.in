@@ -1,0 +1,9 @@
+./sdb ./guess
+patch 0x4010e8 0x9090 2
+break 0x4010e8
+cont
+1
+break 4010ea
+patch 4010ea 0x03ba 4
+cont
+cont

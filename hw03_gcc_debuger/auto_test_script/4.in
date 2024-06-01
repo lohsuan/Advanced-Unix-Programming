@@ -1,0 +1,9 @@
+./sdb ./hello
+break 0x401005
+break 40102b
+cont
+syscall
+syscall
+syscall
+syscall
+syscall

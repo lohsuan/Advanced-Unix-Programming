@@ -1,0 +1,9 @@
+./sdb ./hello
+break 0x401005
+break 40102b
+info break
+si
+si
+cont
+info reg
+cont
