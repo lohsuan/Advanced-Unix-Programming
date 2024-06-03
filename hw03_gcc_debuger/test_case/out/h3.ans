@@ -1,0 +1,21 @@
+** please load a program first.
+** program './deep' loaded. entry point 0x401131.
+      401131: f3 0f 1e fa                     	endbr64   
+      401135: 55                              	push      rbp
+      401136: 48 89 e5                        	mov       rbp, rsp
+      401139: 48 83 ec 10                     	sub       rsp, 0x10
+      40113d: b8 00 00 00 00                  	mov       eax, 0
+      401135: 55                              	push      rbp
+      401136: 48 89 e5                        	mov       rbp, rsp
+      401139: 48 83 ec 10                     	sub       rsp, 0x10
+      40113d: b8 00 00 00 00                  	mov       eax, 0
+      401142: e8 3f ff ff ff                  	call      0x401086
+      401136: 48 89 e5                        	mov       rbp, rsp
+      401139: 48 83 ec 10                     	sub       rsp, 0x10
+      40113d: b8 00 00 00 00                  	mov       eax, 0
+      401142: e8 3f ff ff ff                  	call      0x401086
+      401147: 89 45 fc                        	mov       dword ptr [rbp - 4], eax
+this is callee
+hello world
+hello unix
+** the target program terminated.

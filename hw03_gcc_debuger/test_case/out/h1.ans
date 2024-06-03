@@ -1,0 +1,44 @@
+** program './game' loaded. entry point 0x401000.
+      401000: b9 05 00 00 00                  	mov       ecx, 5
+      401005: 48 83 f9 00                     	cmp       rcx, 0
+      401009: 74 1f                           	je        0x40102a
+      40100b: e8 2b 00 00 00                  	call      0x40103b
+      401010: e8 5c 00 00 00                  	call      0x401071
+** set a breakpoint at 0x401005.
+** set a breakpoint at 0x401009.
+Num     Address
+0       0x401005
+1       0x401009
+** hit a breakpoint at 0x401005.
+      401005: 48 83 f9 00                     	cmp       rcx, 0
+      401009: 74 1f                           	je        0x40102a
+      40100b: e8 2b 00 00 00                  	call      0x40103b
+      401010: e8 5c 00 00 00                  	call      0x401071
+      401015: e8 72 00 00 00                  	call      0x40108c
+** hit a breakpoint at 0x401009.
+      401009: 74 1f                           	je        0x40102a
+      40100b: e8 2b 00 00 00                  	call      0x40103b
+      401010: e8 5c 00 00 00                  	call      0x401071
+      401015: e8 72 00 00 00                  	call      0x40108c
+      40101a: 48 83 f8 01                     	cmp       rax, 1
+** delete breakpoint 0.
+guess a number : 
+wrong
+** hit a breakpoint at 0x401009.
+      401009: 74 1f                           	je        0x40102a
+      40100b: e8 2b 00 00 00                  	call      0x40103b
+      401010: e8 5c 00 00 00                  	call      0x401071
+      401015: e8 72 00 00 00                  	call      0x40108c
+      40101a: 48 83 f8 01                     	cmp       rax, 1
+** set a breakpoint at 0x401005.
+Num     Address
+1       0x401009
+2       0x401005
+guess a number : 
+wrong
+** hit a breakpoint at 0x401005.
+      401005: 48 83 f9 00                     	cmp       rcx, 0
+      401009: 74 1f                           	je        0x40102a
+      40100b: e8 2b 00 00 00                  	call      0x40103b
+      401010: e8 5c 00 00 00                  	call      0x401071
+      401015: e8 72 00 00 00                  	call      0x40108c

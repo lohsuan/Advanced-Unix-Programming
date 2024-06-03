@@ -1,0 +1,12 @@
+../sdb ./deep
+break 40109c
+info break
+break 401031
+info break
+delete 0
+info break
+delete 3
+info break
+cont
+info break
+cont

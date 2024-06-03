@@ -1,0 +1,6 @@
+../sdb
+si
+load ./deep
+si
+si
+cont

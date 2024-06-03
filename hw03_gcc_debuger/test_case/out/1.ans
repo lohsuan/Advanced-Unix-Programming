@@ -1,0 +1,19 @@
+** please load a program first.
+** program './hello' loaded. entry point 0x401000.
+      401000: f3 0f 1e fa                     	endbr64   
+      401004: 55                              	push      rbp
+      401005: 48 89 e5                        	mov       rbp, rsp
+      401008: ba 0e 00 00 00                  	mov       edx, 0xe
+      40100d: 48 8d 05 ec 0f 00 00            	lea       rax, [rip + 0xfec]
+      401004: 55                              	push      rbp
+      401005: 48 89 e5                        	mov       rbp, rsp
+      401008: ba 0e 00 00 00                  	mov       edx, 0xe
+      40100d: 48 8d 05 ec 0f 00 00            	lea       rax, [rip + 0xfec]
+      401014: 48 89 c6                        	mov       rsi, rax
+      401005: 48 89 e5                        	mov       rbp, rsp
+      401008: ba 0e 00 00 00                  	mov       edx, 0xe
+      40100d: 48 8d 05 ec 0f 00 00            	lea       rax, [rip + 0xfec]
+      401014: 48 89 c6                        	mov       rsi, rax
+      401017: bf 01 00 00 00                  	mov       edi, 1
+hello world!
+** the target program terminated.

@@ -1,0 +1,31 @@
+** program './deep' loaded. entry point 0x401131.
+      401131: f3 0f 1e fa                     	endbr64   
+      401135: 55                              	push      rbp
+      401136: 48 89 e5                        	mov       rbp, rsp
+      401139: 48 83 ec 10                     	sub       rsp, 0x10
+      40113d: b8 00 00 00 00                  	mov       eax, 0
+** set a breakpoint at 0x40109c.
+Num     Address
+0       0x40109c
+** set a breakpoint at 0x401031.
+Num     Address
+0       0x40109c
+1       0x401031
+** delete breakpoint 0.
+Num     Address
+1       0x401031
+** breakpoint 3 does not exist.
+Num     Address
+1       0x401031
+** hit a breakpoint at 0x401031.
+      401031: 48 89 c6                        	mov       rsi, rax
+      401034: bf 01 00 00 00                  	mov       edi, 1
+      401039: e8 20 01 00 00                  	call      0x40115e
+      40103e: 90                              	nop       
+      40103f: c9                              	leave     
+Num     Address
+1       0x401031
+this is callee
+hello world
+hello unix
+** the target program terminated.

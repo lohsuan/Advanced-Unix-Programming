@@ -1,0 +1,37 @@
+** program './guess' loaded. entry point 0x40108b.
+      40108b: f3 0f 1e fa                     	endbr64   
+      40108f: 55                              	push      rbp
+      401090: 48 89 e5                        	mov       rbp, rsp
+      401093: 48 83 ec 10                     	sub       rsp, 0x10
+      401097: ba 12 00 00 00                  	mov       edx, 0x12
+** set a breakpoint at 0x4010de.
+guess a number > 
+** hit a breakpoint at 0x4010de.
+      4010de: 48 89 c7                        	mov       rdi, rax
+      4010e1: e8 1a ff ff ff                  	call      0x401000
+      4010e6: 85 c0                           	test      eax, eax
+      4010e8: 75 1b                           	jne       0x401105
+      4010ea: ba 06 00 00 00                  	mov       edx, 6
+** patch memory at address 0x4010e8.
+      4010e1: e8 1a ff ff ff                  	call      0x401000
+      4010e6: 85 c0                           	test      eax, eax
+      4010e8: 90                              	nop       
+      4010e9: 90                              	nop       
+      4010ea: ba 06 00 00 00                  	mov       edx, 6
+Num	Address		
+0	0x4010de
+** delete breakpoint 0.
+** set a breakpoint at 0x4010ea.
+** breakpoint 0 does not exist.
+Num	Address		
+1	0x4010ea
+** hit a breakpoint at 0x4010ea.
+      4010ea: ba 06 00 00 00                  	mov       edx, 6
+      4010ef: 48 8d 05 1f 0f 00 00            	lea       rax, [rip + 0xf1f]
+      4010f6: 48 89 c6                        	mov       rsi, rax
+      4010f9: bf 01 00 00 00                  	mov       edi, 1
+      4010fe: e8 25 00 00 00                  	call      0x401128
+** patch memory at address 0x402015.
+
+WIN
+** the target program terminated.

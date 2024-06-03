@@ -43,11 +43,6 @@ canery =  b'\x00' + canery
 print(">>> canery", canery)
 print(">>> hex_canery", hex_canery)
 
-# return_addr = z.split(payloads)[1][8:-1]
-# hex_return_addr = hex(u64(return_addr.ljust(8, b'\x00')))
-# print(">>> return_addr", return_addr)
-# print(">>> hex_return_addr", hex_return_addr)
-
 
 ######################################### nWhat's the room number?
 

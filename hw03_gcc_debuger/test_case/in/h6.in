@@ -1,0 +1,9 @@
+../sdb ./game
+break 0x4010f1
+syscall
+syscall
+syscall
+syscall
+3
+syscall
+syscall

@@ -1,0 +1,13 @@
+../sdb ./game
+break 401005
+break 401009
+info break
+syscall
+syscall
+delete 0
+cont
+2
+break 401005
+info break
+cont
+2

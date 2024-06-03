@@ -1,0 +1,44 @@
+** program './game' loaded. entry point 0x401000.
+      401000: b9 05 00 00 00                  	mov       ecx, 5
+      401005: 48 83 f9 00                     	cmp       rcx, 0
+      401009: 74 1f                           	je        0x40102a
+      40100b: e8 2b 00 00 00                  	call      0x40103b
+      401010: e8 5c 00 00 00                  	call      0x401071
+** set a breakpoint at 0x4010f1.
+** enter a syscall(1) at 0x401052.
+      401052: 0f 05                           	syscall   
+      401054: 59                              	pop       rcx
+      401055: c3                              	ret       
+      401056: 51                              	push      rcx
+      401057: b8 01 00 00 00                  	mov       eax, 1
+guess a number : 
+** leave a syscall(1) = 18 at 0x401052.
+      401052: 0f 05                           	syscall   
+      401054: 59                              	pop       rcx
+      401055: c3                              	ret       
+      401056: 51                              	push      rcx
+      401057: b8 01 00 00 00                  	mov       eax, 1
+** enter a syscall(0) at 0x401088.
+      401088: 0f 05                           	syscall   
+      40108a: 59                              	pop       rcx
+      40108b: c3                              	ret       
+      40108c: 51                              	push      rcx
+      40108d: b8 00 00 00 00                  	mov       eax, 0
+** leave a syscall(0) = 2 at 0x401088.
+      401088: 0f 05                           	syscall   
+      40108a: 59                              	pop       rcx
+      40108b: c3                              	ret       
+      40108c: 51                              	push      rcx
+      40108d: b8 00 00 00 00                  	mov       eax, 0
+** hit a breakpoint at 0x4010f1.
+      4010f1: 48 8d 35 2b 0f 00 00            	lea       rsi, [rip + 0xf2b]
+      4010f8: ba 06 00 00 00                  	mov       edx, 6
+      4010fd: 0f 05                           	syscall   
+      4010ff: 59                              	pop       rcx
+      401100: c3                              	ret       
+** enter a syscall(1) at 0x4010fd.
+      4010fd: 0f 05                           	syscall   
+      4010ff: 59                              	pop       rcx
+      401100: c3                              	ret       
+      401101: b8 3c 00 00 00                  	mov       eax, 0x3c
+      401106: 48 31 ff                        	xor       rdi, rdi

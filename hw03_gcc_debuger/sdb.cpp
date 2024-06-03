@@ -48,8 +48,8 @@ uint8_t *textptr = NULL;       // allocated memory for text section
 uint64_t text_size = 0;        // text section size
 uint64_t text_start_addr = 0;  // text section start address in memory
 
-unordered_map<uint64_t, char> breakpoints;
-map<uint64_t, int> breakpoints_id;
+unordered_map<uint64_t, char> breakpoints; // address, original data
+map<uint64_t, int> breakpoints_id; // address, id
 int breakpoint_count = 0;
 uint64_t restore_breakpoint_address = 0;
 
@@ -155,12 +155,15 @@ void delete_breakpoint(int id) {
         if (breakpoints_id[breakpoint.first] == id) {
             // restore the original data
             uint64_t data = ptrace(PTRACE_PEEKTEXT, child_pid, breakpoint.first, 0);
-            uint64_t index = regs.rip - text_start_addr;  // 目前指令在 text section 的 index
+            // uint64_t index = regs.rip - text_start_addr;  // 目前指令在 text section 的 index
             // x86 arch: little-endian (低位元組在前) 0xcc -> 0xcc00000000000000
             // data[0] 是 0xcc，要換回原本的指令
-            ((char *)&data)[0] = textptr[index];
+            ((char *)&data)[0] = breakpoints[breakpoint.first];
+            // printf("=== restore data: 0x%lx\n", data);
+            // printf("breakpoint.first:  0x%lx\n", breakpoint.first);
+            // printf("===== breakpoints[breakpoint.first]: %x\n", breakpoints[breakpoint.first]);
             ptrace(PTRACE_POKETEXT, child_pid, breakpoint.first, data);
-
+            
             // remove the breakpoint (should remove id first, or breakpoint.first will be invalid)
             int x = breakpoints_id.erase(breakpoint.first);
             int y = breakpoints.erase(breakpoint.first);
@@ -228,7 +231,7 @@ void patch_memory(uint64_t address, uint64_t patch_hex_value, int len) {
 
 void restore_breakpoint() {
     // 將原本的 breakpoint 恢復，下一次再執行到 breakpoint 時，才會停下來
-    // printf("** restore breakpoint at 0x%lx.\n", restore_breakpoint_address);
+    // printf("*** restore breakpoint at 0x%lx.\n", restore_breakpoint_address);
     uint64_t data = ptrace(PTRACE_PEEKTEXT, child_pid, restore_breakpoint_address, 0);
     uint64_t data_int3 = (data & 0xFFFFFFFFFFFFFF00) | INT3;
     ptrace(PTRACE_POKETEXT, child_pid, restore_breakpoint_address, data_int3);
@@ -351,7 +354,7 @@ int main(int argc, char *argv[]) {
         if (WIFSTOPPED(child_status)) {
             long data = ptrace(PTRACE_PEEKTEXT, child_pid, regs.rip - step, 0);
 
-            if ((data & 0xFF) == INT3) {
+            if ((data & 0xFF) == INT3 && breakpoints.find(regs.rip - step) != breakpoints.end()){
                 regs.rip -= step;
                 printf("** hit a breakpoint at 0x%llx.\n", regs.rip);
                 uint64_t data = ptrace(PTRACE_PEEKTEXT, child_pid, regs.rip, 0);

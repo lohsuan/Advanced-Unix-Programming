@@ -1,0 +1,9 @@
+../sdb ./game
+break 401005
+cont
+patch 40101a 0x02f88348 4
+cont
+1
+patch 40101a 0x01f88348 4
+cont
+1

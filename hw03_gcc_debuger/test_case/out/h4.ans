@@ -1,0 +1,38 @@
+** program './deep' loaded. entry point 0x401131.
+      401131: f3 0f 1e fa                     	endbr64   
+      401135: 55                              	push      rbp
+      401136: 48 89 e5                        	mov       rbp, rsp
+      401139: 48 83 ec 10                     	sub       rsp, 0x10
+      40113d: b8 00 00 00 00                  	mov       eax, 0
+** set a breakpoint at 0x401136.
+** set a breakpoint at 0x40113d.
+Num     Address
+0       0x401136
+1       0x40113d
+      401135: 55                              	push      rbp
+      401136: 48 89 e5                        	mov       rbp, rsp
+      401139: 48 83 ec 10                     	sub       rsp, 0x10
+      40113d: b8 00 00 00 00                  	mov       eax, 0
+      401142: e8 3f ff ff ff                  	call      0x401086
+** hit a breakpoint at 0x401136.
+      401136: 48 89 e5                        	mov       rbp, rsp
+      401139: 48 83 ec 10                     	sub       rsp, 0x10
+      40113d: b8 00 00 00 00                  	mov       eax, 0
+      401142: e8 3f ff ff ff                  	call      0x401086
+      401147: 89 45 fc                        	mov       dword ptr [rbp - 4], eax
+** hit a breakpoint at 0x40113d.
+      40113d: b8 00 00 00 00                  	mov       eax, 0
+      401142: e8 3f ff ff ff                  	call      0x401086
+      401147: 89 45 fc                        	mov       dword ptr [rbp - 4], eax
+      40114a: b8 00 00 00 00                  	mov       eax, 0
+      40114f: e8 5d ff ff ff                  	call      0x4010b1
+$rax    0x0000000000000000	$rbx    0x0000000000000000	$rcx    0x0000000000000000
+$rdx    0x0000000000000000	$rsi    0x0000000000000000	$rdi    0x0000000000000000
+$rbp    0x00007fffffffe0a8	$rsp    0x00007fffffffe098	$r8     0x0000000000000000
+$r9     0x0000000000000000	$r10    0x0000000000000000	$r11    0x0000000000000000
+$r12    0x0000000000000000	$r13    0x0000000000000000	$r14    0x0000000000000000
+$r15    0x0000000000000000	$rip    0x000000000040113d	$eflags 0x0000000000000202
+this is callee
+hello world
+hello unix
+** the target program terminated.
